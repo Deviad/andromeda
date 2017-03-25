@@ -1,12 +1,12 @@
 <?php
 
-namespace Entity;
-use Db\DbObj;
-use Entity\User;
+namespace App\Entity;
+use App\Db\DbObj;
+use App\Entity\User;
 
 
 
-class Answer extends DbObj
+class Answer
 {
 
 
@@ -18,9 +18,11 @@ class Answer extends DbObj
 
     public $answer;
 
+    private $db;
 
-    public function __construct() {
+    public function __construct(DbObj $dbObj) {
         $this->the_table = "`answers`";
+        $this->db = $dbObj;
     }
 
 
@@ -52,13 +54,14 @@ class Answer extends DbObj
 
         }
 
-        $the_filled_attrs = implode(", ", $filled_attrs_values['attrs']);
+        //converting array to string
 
+        $the_filled_attrs = implode(", ", $filled_attrs_values['attrs']);
         $the_filled_values = implode(", ", $filled_attrs_values['values']);
 
 
-        parent::addObj($this->the_table, $the_filled_attrs, $the_filled_values);
-
+        $this->db->addObj($this->the_table, $the_filled_attrs, $the_filled_values);
+        $this->db = null;
     }
 
 

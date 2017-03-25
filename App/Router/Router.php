@@ -1,9 +1,9 @@
 <?php
 
-namespace Router;
-include dirname(__DIR__) . '/Controller/Controller.php';
+namespace App\Router;
+//include dirname(__DIR__) . '/Controller/Controller.php';
 
-use Controller\Controller;
+use App\Controller\Controller;
 
 
 class Router

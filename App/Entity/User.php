@@ -1,9 +1,9 @@
 <?php
 
-namespace Entity;
-use Db\DbObj;
+namespace App\Entity;
+use App\Db\DbObj;
 
-class User extends DbObj
+class User
 {
 
 
@@ -19,15 +19,18 @@ class User extends DbObj
 
     public $telephone;
 
-    public function __construct() {
+    private $db;
+
+    public function __construct(DbObj $dbObj) {
         $this->the_table = "`users`";
+        $this->db = $dbObj;
     }
 
 
     public function getUserbyEmail($email) {
         $projection = '`id`, `name`, `surname`, `email`, `telephone`';
         $condition = " WHERE `email` = '{$email}'";
-        $fetched_array = parent::getObj($projection, $this->the_table, $condition);
+        $fetched_array = $this->db->getObj($projection, $this->the_table, $condition);
         return $fetched_array;
     }
 
@@ -40,8 +43,8 @@ class User extends DbObj
 
         $condition = " WHERE `event_id` = '{$event_id}' AND `language` = '{$language}'";
 
-        $fetched_array = parent::getObj($projection, $this->the_table, $condition);
-
+        $fetched_array = $this->db->getObj($projection, $this->the_table, $condition);
+        $this->db = null;
         return $fetched_array;
     }
 
@@ -71,13 +74,15 @@ class User extends DbObj
 
         }
 
+        //converting array to string
+
         $the_filled_attrs = implode(", ", $filled_attrs_values['attrs']);
 
         $the_filled_values = implode(", ", $filled_attrs_values['values']);
 
 
-        parent::addObj($this->the_table, $the_filled_attrs, $the_filled_values);
-
+        $this->db->addObj($this->the_table, $the_filled_attrs, $the_filled_values);
+        $this->db = null;
     }
 
 

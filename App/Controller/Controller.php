@@ -1,14 +1,25 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
-use Db\DbObj;
-use Entity\Answer;
-use Entity\FormField;
-use Entity\User;
+use App\Db\DbMgmt;
+use App\Db\DbObj;
+use App\Entity\Answer;
+use App\Entity\FormField;
+use App\Entity\User;
 
 class Controller
 {
+
+    private $db = null;
+
+    public function __construct()
+    {
+        $dbMgmt = new DbMgmt();
+        $this->db = new DbObj($dbMgmt);
+    }
+
+
     public function loadData()
     {
 
@@ -21,7 +32,6 @@ class Controller
 
         try {
 
-            $event_data = '';
             $file_path = dirname(__DIR__) . '/EventDataFiles/' . $event_id . '-' . $language . '.json';
             if (!file_exists($file_path)) {
                 throw new \Exception('Matching file not found');
@@ -36,7 +46,8 @@ class Controller
             };
 
             foreach ($formatted_data as $value) {
-                $field = new FormField();
+
+                $field = new FormField($this->db);
                 $field->id = $value['id'];
                 $field->event_id = $value['id_event'];
                 $field->type = $value['type'];
@@ -79,9 +90,9 @@ class Controller
         try {
 
 
-            $form_fields = array();
 
-            $fields = new FormField();
+
+            $fields = new FormField($this->db);
 
             $fields = $fields->getFormFields($event_id, $language);
 
@@ -103,7 +114,7 @@ class Controller
     function register($request)
     {
 
-        $user = new User();
+        $user = new User($this->db);
 
         $user->name = htmlspecialchars($request['name']);
 
@@ -118,7 +129,7 @@ class Controller
         $user = $user->getUserbyEmail($request['email']);
         $user_id = $user[0]['id'];
 
-        $answer = new Answer();
+        $answer = new Answer($this->db);
         $answer->id = substr(md5(sha1(time() . rand())), 0, 6);
         $answer->user_id = $user_id;
         $answer->event_id = $request['event_id'];

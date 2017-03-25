@@ -3,7 +3,7 @@
 //require_once getcwd().'/controller/Router.php';
 
 
-define('CORE_PATH', 'app/');
+define('CORE_PATH', '');
 
 spl_autoload_register(function($className)
 {
@@ -13,7 +13,7 @@ spl_autoload_register(function($className)
     include_once($class);
 });
 
-use Router\Router;
+use App\Router\Router;
 
 $router = new Router();
 

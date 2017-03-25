@@ -8,20 +8,19 @@
  *
  */
 
-namespace Db;
-
-//include (__DIR__) . '/DbMgmt.php';
-
-use Db\DbMgmt as DbMgmt;
+namespace App\Db;
 
 class DbObj
 {
-    public  $the_table = Null;
-    public  $the_attrs = NUll;
-    public  $projection = Null;
+    public  $the_table = null;
+    public  $the_attrs = null;
+    public  $projection = null;
     public  $the_values;
+    public  $dbConnection;
 
-
+    public function __construct (DbMgmt $connection) {
+        $this->dbConnection = $connection;
+    }
 
     public function addObj($the_table, $the_attrs, $the_values)
     {
@@ -32,7 +31,7 @@ class DbObj
         $sql     = "INSERT INTO $the_table ( $the_attrs )  VALUES ( $the_values );";
 //        var_dump($sql);
 
-        $pdo_obj = DbMgmt::newConn(); //get the pdo object
+        $pdo_obj = $this->dbConnection->newConn(); //get the pdo object
         $stmt    = $pdo_obj->prepare($sql);
 
         var_dump($sql);
@@ -45,8 +44,7 @@ class DbObj
     public  function rmObj($the_table, $the_attrs, $the_values)
     {
         $sql     = "DELETE FROM $the_table WHERE ($the_attrs) =  ( $the_values );";
-        $pdo_obj = DbMgmt::newConn(); //get the pdo object
-        $stmt    = $pdo_obj->prepare($sql);
+        $stmt    = $this->dbConnection->prepare($sql);
         $stmt->execute();
         echo "Data deleted!";
     }
@@ -54,8 +52,8 @@ class DbObj
     public  function getObj($projection, $the_table, $condition)
     {
         $sql = "SELECT {$projection} FROM {$the_table} {$condition}";
-        $pdo_obj = DbMgmt::newConn(); //get the pdo object
-        $stmt    = $pdo_obj->prepare($sql);
+
+        $stmt    = $this->dbConnection->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
