@@ -9,7 +9,7 @@ class DbMgmt extends \PDO
     const PORT = "3306";
     const USERNAME = 'root';
     const PASSWORD = '';
-    const DBNAME = 'universumphp';
+    const DBNAME = 'andromeda';
     const CHARSET = 'utf8';
 
 
